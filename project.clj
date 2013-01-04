@@ -1,4 +1,4 @@
-(defproject clj-paymill "0.1.0-SNAPSHOT"
+(defproject clj-paymill "0.1.1"
   :description "Clojure library for the Paymill API"
   :url "http://github.com/hotwoofy/clj-paymill"
   :license {:name "Eclipse Public License"
