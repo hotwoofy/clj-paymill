@@ -7,6 +7,12 @@
 (defn list-clients [key & [filters]]
   (paymill-request key :get "clients" filters))
 
+(defn get-client [key id]
+  (paymill-request key :get ["clients" id]))
+
+(defn update-client! [key id email name]
+  (paymill-request key :put ["clients" id] {:email email :description name}))
+
 (defn create-payment!
   ([key token]
      (paymill-request key :post "payments" {:token token}))

@@ -20,6 +20,19 @@
       (is (= 5 (count clients)))
       (is (= "example-0@example.org" (:email (first clients)))))))
 
+(deftest gets-clients?
+  (let [key (generate-test-key)
+        client (create-client! key "example@example.org" "Test Testerson")]
+    (is (= client (get-client key (:id client))))))
+
+(deftest updates-clients?
+  (let [key (generate-test-key)
+        client (create-client! key "example@example.org" "Test Testerson")
+        update (update-client! key (:id client) "example-changed@example.org" "Changed Testerson")
+        updated-client (get-client key (:id client))]
+    (is (= "example-changed@example.org" (:email updated-client)))
+    (is (= "Changed Testerson" (:description updated-client)))))
+
 (deftest filters-lists?
   (let [key (generate-test-key)]
     (doseq [i (range 0 5)]
