@@ -23,21 +23,18 @@
     :cancel_at_period_end (Boolean. value)
     value))
 
-(defn parse-body [body]
-  (read-str body :key-fn keyword :value-fn parse-value))
+(defn parse-body [response]
+  (let [json (read-str (:body response) :key-fn keyword :value-fn parse-value)]
+    (if-let [data (:data json)]
+      data
+      (throw (ex-info "Error" json)))))
 
 (defn paymill-request [key method resource & [params]]
-  (try (-> (http/request {:url (resource-url resource)
-                          :method method
-                          :insecure? *insecure?*
-                          :accept :json
-                          :basic-auth [key ""]
-                          :query-params (if (= :get method) params)
-                          :form-params params})
-           :body
-           parse-body
-           :data)
-       (catch Exception ex
-         (let [error (-> (ex-data ex) :object :body parse-body)
-               message (:error error)]
-           (throw (ex-info message error))))))
+  (parse-body (http/request {:url (resource-url resource)
+                             :method method
+                             :insecure? *insecure?*
+                             :accept :json
+                             :basic-auth [key ""]
+                             :query-params (if (= :get method) params)
+                             :form-params params
+                             :throw-exceptions false})))

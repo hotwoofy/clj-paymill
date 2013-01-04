@@ -2,10 +2,18 @@
   (:use clojure.test
         clj-paymill.net))
 
+(defmacro catch-data [form]
+  `(try (~@form)
+        (catch Exception ex#
+          (ex-data ex#))))
+
 (deftest parses-errors?
-  (is (= "Api_Exception_InvalidAuthentication" (:exception (try (paymill-request "invalidkey" :get "clients")
-                                                                (catch Exception ex
-                                                                  (ex-data ex)))))))
+  (is (= {:error "Access Denied", :exception "Api_Exception_InvalidAuthentication"}
+         (catch-data (paymill-request "invalidkey" :get "clients")))))
+
+(deftest parses-arbitrarily-different-error-formats?
+  (is (= {:error {:messages {:required "Parameter is mandatory"}, :field "Identifier"}}
+         (catch-data (paymill-request (generate-test-key) :delete ["subscriptions" nil])))))
 
 (deftest gets-from-api?
   (is (= [] (paymill-request (generate-test-key) :get "clients"))))
