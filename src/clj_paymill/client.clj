@@ -13,8 +13,6 @@
   ([key token client]
      (paymill-request key :post "payments" {:token token :client (:id client)})))
 
-(defn update-payment! [key client payment])
-
 (defn create-offer! [key name amount currency interval]
   (paymill-request key :post "offers" {:name name
                                        :amount amount

@@ -40,9 +40,6 @@
     (is (= (:id client) (:client payment)))
     (is (= "1111" (:last4 payment)))))
 
-(deftest updates-client-payments?
-  (is false))
-
 (deftest creates-offers?
   (let [offer (create-offer! (generate-test-key) "Test offer" 5 "GBP" "month")]
     (is (= "Test offer") (:name offer))))
