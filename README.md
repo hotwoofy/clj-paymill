@@ -9,7 +9,7 @@ Installation
 `clj-paymill` is up on [Clojars](http://clojars.org/clj-paymill):
 
 ```clojure
-[clj-paymill "0.1.3"]
+[clj-paymill "0.1.4-SNAPSHOT"]
 ```
 
 Testing
@@ -34,7 +34,11 @@ Only very limited functionality is offered at this stage (i.e. just what I need)
 (create-client! key "example@example.org" "Test Testerson")
 
 ;; find them again
+(get-client key (:id client))
 (list-clients key {:email "example@example.org"})
+
+;; update them
+(update-client! (:id client) "new-email@example.org" "New Name")
 
 ;; create a payment (token taken from Paymill Bridge)
 (create-payment! key token client)
