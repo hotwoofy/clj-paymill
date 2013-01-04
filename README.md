@@ -9,7 +9,7 @@ Installation
 `clj-paymill` is up on [Clojars](http://clojars.org/clj-paymill):
 
 ```clojure
-[clj-paymill "0.1.0-SNAPSHOT"]
+[clj-paymill "0.1.1"]
 ```
 
 Testing
