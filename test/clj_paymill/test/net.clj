@@ -3,10 +3,9 @@
         clj-paymill.net))
 
 (deftest parses-errors?
-  (is (= "Api_Exception_InvalidAuthentication" (:exception (paymill-request "invalidkey" :get "clients")))))
-
-(deftest generates-valid-test-keys?
-  (is (nil? (:exception (paymill-request (generate-test-key) :get "clients")))))
+  (is (= "Api_Exception_InvalidAuthentication" (:exception (try (paymill-request "invalidkey" :get "clients")
+                                                                (catch Exception ex
+                                                                  (ex-data ex)))))))
 
 (deftest gets-from-api?
   (is (= [] (paymill-request (generate-test-key) :get "clients"))))

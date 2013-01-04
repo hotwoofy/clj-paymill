@@ -24,18 +24,20 @@
     value))
 
 (defn parse-body [body]
-  (let [json (read-str body :key-fn keyword :value-fn parse-value)]
-   (if-let [data (:data json)]
-     data
-     json)))
+  (read-str body :key-fn keyword :value-fn parse-value))
 
 (defn paymill-request [key method resource & [params]]
-  (parse-body (try (:body (http/request {:url (resource-url resource)
-                                         :method method
-                                         :insecure? *insecure?*
-                                         :accept :json
-                                         :basic-auth [key ""]
-                                         :query-params (if (= :get method) params)
-                                         :form-params params}))
-                   (catch Exception ex
-                     (-> (ex-data ex) :object :body)))))
+  (try (-> (http/request {:url (resource-url resource)
+                          :method method
+                          :insecure? *insecure?*
+                          :accept :json
+                          :basic-auth [key ""]
+                          :query-params (if (= :get method) params)
+                          :form-params params})
+           :body
+           parse-body
+           :data)
+       (catch Exception ex
+         (let [error (-> (ex-data ex) :object :body parse-body)
+               message (:error error)]
+           (throw (ex-info message error))))))
