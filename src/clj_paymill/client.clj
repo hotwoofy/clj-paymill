@@ -33,6 +33,6 @@
   (paymill-request key :get ["subscriptions" id]))
 
 (defn cancel-subscription! [key id & [at-period-end?]]
-  (when at-period-end?
-    (paymill-request key :put ["subscriptions" id] {:cancel_at_period_end (boolean at-period-end?)}))
-  (paymill-request key :delete ["subscriptions" id]))
+  (if at-period-end?
+    (paymill-request key :put ["subscriptions" id] {:cancel_at_period_end (boolean at-period-end?)})
+    (paymill-request key :delete ["subscriptions" id])))

@@ -91,5 +91,4 @@
         offer (create-offer! key "Test offer" 10 "GBP" "month")
         subscription (subscribe! key client payment offer)
         cancellation (cancel-subscription! key (:id subscription) true)]
-    (is (= true (:cancel_at_period_end cancellation)))
-    (is (not (nil? (:canceled_at cancellation))))))
+    (is (= true (:cancel_at_period_end cancellation)))))

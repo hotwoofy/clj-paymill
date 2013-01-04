@@ -18,8 +18,13 @@
 (defn resource-url [resource]
   (str *api-root-url* (if (vector? resource) (join "/" resource) resource)))
 
+(defn parse-value [key value]
+  (condp = key
+    :cancel_at_period_end (Boolean. value)
+    value))
+
 (defn parse-body [body]
-  (let [json (read-str body :key-fn keyword)]
+  (let [json (read-str body :key-fn keyword :value-fn parse-value)]
    (if-let [data (:data json)]
      data
      json)))
@@ -30,7 +35,7 @@
                                          :insecure? *insecure?*
                                          :accept :json
                                          :basic-auth [key ""]
-                                         :query-params params
+                                         :query-params (if (= :get method) params)
                                          :form-params params}))
                    (catch Exception ex
                      (-> (ex-data ex) :object :body)))))
